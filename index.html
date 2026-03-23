@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineDice - Selector de Pelis</title>
+    <title>CineDice - ¿Qué vemos hoy?</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="stars"></div>
     <div class="container">
         <h1>🎬 CineDice</h1>
         <p>Escribe de 2 a 6 películas (una por línea):</p>
-        <textarea id="movieInput" placeholder="1. Shrek&#10;2. Inception&#10;3. Mad Max..."></textarea>
+        <textarea id="movieInput" placeholder="Ejemplo:&#10;Shrek&#10;Inception&#10;Titanic"></textarea>
         
         <div class="scene">
-            <div class="cube" id="dice">
-                <div class="face front">1</div>
-                <div class="face back">2</div>
-                <div class="face right">3</div>
-                <div class="face left">4</div>
-                <div class="face top">5</div>
-                <div class="face bottom">6</div>
+            <div id="dice" class="cube dice-6">
+                <div class="face f1">1</div>
+                <div class="face f2">2</div>
+                <div class="face f3">3</div>
+                <div class="face f4">4</div>
+                <div class="face f5">5</div>
+                <div class="face f6">6</div>
             </div>
         </div>
 
-        <button onclick="rollDice()">¡Lanzar Dado!</button>
-        <h2 id="result"></h2>
+        <button onclick="rollDice()">🎲 Lanzar dado</button>
+        <h2 id="result">🍿 ¡Suerte!</h2>
     </div>
     <script src="script.js"></script>
 </body>
