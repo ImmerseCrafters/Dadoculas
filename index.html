@@ -3,29 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineDice - ¿Qué vemos hoy?</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CineDice - Selector 3D</title>
+    <style>
+        /* --- CSS (ESTILO Y 3D) --- */
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+        }
+
+        .container {
+            text-align: center; background: rgba(0,0,0,0.8);
+            padding: 25px; border-radius: 20px; border: 2px solid #e50914;
+            box-shadow: 0 0 30px rgba(229, 9, 20, 0.4); width: 320px;
+        }
+
+        textarea {
+            width: 100%; height: 80px; background: #111; color: #fff;
+            border: 1px solid #444; border-radius: 8px; padding: 10px;
+            margin-bottom: 20px; resize: none; box-sizing: border-box;
+        }
+
+        /* La escena es el "ojo" que mira el 3D */
+        .scene {
+            width: 100px; height: 100px; margin: 50px auto;
+            perspective: 1000px; /* Crucial para el efecto 3D */
+        }
+
+        /* El dado */
+        .cube {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d; /* Permite que las caras sean 3D */
+            transition: transform 3s cubic-bezier(0.17, 0.67, 0.1, 1);
+        }
+
+        .face {
+            position: absolute; width: 100px; height: 100px;
+            background: linear-gradient(45deg, #e50914, #8b0000);
+            border: 2px solid white; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: bold; text-align: center;
+            padding: 5px; box-sizing: border-box;
+            backface-visibility: visible;
+        }
+
+        /* Configuración de las caras (Posiciones iniciales) */
+        /* Moneda / 2 Caras */
+        .dice-2 .f1 { transform: rotateY(0deg) translateZ(5px); }
+        .dice-2 .f2 { transform: rotateY(180deg) translateZ(5px); }
+
+        /* Triángulo / 3 Caras */
+        .dice-3 .f1 { transform: rotateY(0deg) translateZ(30px); }
+        .dice-3 .f2 { transform: rotateY(120deg) translateZ(30px); }
+        .dice-3 .f3 { transform: rotateY(240deg) translateZ(30px); }
+
+        /* Cuadrado / 4 Caras */
+        .dice-4 .f1 { transform: rotateY(0deg) translateZ(50px); }
+        .dice-4 .f2 { transform: rotateY(90deg) translateZ(50px); }
+        .dice-4 .f3 { transform: rotateY(180deg) translateZ(50px); }
+        .dice-4 .f4 { transform: rotateY(270deg) translateZ(50px); }
+
+        /* Pentágono / 5 Caras */
+        .dice-5 .f1 { transform: rotateY(0deg) translateZ(60px); }
+        .dice-5 .f2 { transform: rotateY(72deg) translateZ(60px); }
+        .dice-5 .f3 { transform: rotateY(144deg) translateZ(60px); }
+        .dice-5 .f4 { transform: rotateY(216deg) translateZ(60px); }
+        .dice-5 .f5 { transform: rotateY(288deg) translateZ(60px); }
+
+        /* Cubo / 6 Caras */
+        .dice-6 .f1 { transform: rotateY(0deg) translateZ(50px); }
+        .dice-6 .f2 { transform: rotateY(180deg) translateZ(50px); }
+        .dice-6 .f3 { transform: rotateY(90deg) translateZ(50px); }
+        .dice-6 .f4 { transform: rotateY(-90deg) translateZ(50px); }
+        .dice-6 .f5 { transform: rotateX(90deg) translateZ(50px); }
+        .dice-6 .f6 { transform: rotateX(-90deg) translateZ(50px); }
+
+        button {
+            background: #e50914; color: white; border: none; padding: 12px;
+            font-size: 16px; font-weight: bold; border-radius: 5px;
+            cursor: pointer; width: 100%; transition: 0.2s;
+        }
+        button:hover { background: #ff1f1f; }
+        #result { margin-top: 20px; height: 30px; }
+    </style>
 </head>
 <body>
+
     <div class="container">
         <h1>🎬 CineDice</h1>
-        <p>Escribe de 2 a 6 películas (una por línea):</p>
-        <textarea id="movieInput" placeholder="Ejemplo:&#10;Shrek&#10;Inception&#10;Titanic"></textarea>
+        <p>Escribe 2 a 6 películas:</p>
+        <textarea id="movieInput" placeholder="Película 1&#10;Película 2&#10;Película 3..."></textarea>
         
         <div class="scene">
-            <div id="dice" class="cube dice-6">
-                <div class="face f1">1</div>
-                <div class="face f2">2</div>
-                <div class="face f3">3</div>
-                <div class="face f4">4</div>
-                <div class="face f5">5</div>
-                <div class="face f6">6</div>
+            <div id="dice" class="cube dice-2">
+                <div class="face f1"></div>
+                <div class="face f2"></div>
+                <div class="face f3"></div>
+                <div class="face f4"></div>
+                <div class="face f5"></div>
+                <div class="face f6"></div>
             </div>
         </div>
 
-        <button onclick="rollDice()">🎲 Lanzar dado</button>
-        <h2 id="result">🍿 ¡Suerte!</h2>
+        <button onclick="rollDice()">🎲 LANZAR</button>
+        <div id="result">🍿 Introduce nombres...</div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        /* --- JAVASCRIPT (LÓGICA) --- */
+        let rotationX = 0;
+        let rotationY = 0;
+
+        function rollDice() {
+            const input = document.getElementById('movieInput').value;
+            const movies = input.split('\n').filter(m => m.trim() !== "");
+            const n = movies.length;
+
+            if (n < 2 || n > 6) {
+                alert("Pon entre 2 y 6 películas (una por línea)");
+                return;
+            }
+
+            const dice = document.getElementById('dice');
+            const faces = document.querySelectorAll('.face');
+            const res = document.getElementById('result');
+
+            // 1. Aplicamos la forma geométrica según el número de pelis
+            dice.className = `cube dice-${n}`;
+
+            // 2. Escribimos los nombres en las caras
+            faces.forEach((face, i) => {
+                if (i < n) {
+                    face.innerText = movies[i];
+                    face.style.display = "flex";
+                } else {
+                    face.style.display = "none";
+                }
+            });
+
+            // 3. Elegimos el ganador
+            const winnerIdx = Math.floor(Math.random() * n);
+            let targetX = 0;
+            let targetY = 0;
+
+            // 4. Calculamos rotación según la cara ganadora
+            if (n === 6) {
+                const positions = [
+                    {x:0, y:0}, {x:0, y:180}, {x:0, y:-90}, 
+                    {x:0, y:90}, {x:-90, y:0}, {x:90, y:0}
+                ];
+                targetX = positions[winnerIdx].x;
+                targetY = positions[winnerIdx].y;
+            } else {
+                const angle = 360 / n;
+                targetY = -(angle * winnerIdx);
+                targetX = 0;
+            }
+
+            // 5. Girar con muchas vueltas para que sea dinámico
+            rotationX += 1440 + targetX;
+            rotationY += 1440 + targetY;
+
+            dice.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+            res.innerText = "🎲 Rodando...";
+
+            setTimeout(() => {
+                res.innerText = "🍿 ¡Toca: " + movies[winnerIdx] + "!";
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
